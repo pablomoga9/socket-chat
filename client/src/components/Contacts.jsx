@@ -6,12 +6,15 @@ export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
-  useEffect(async () => {
-    const data = await JSON.parse(
-      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-    );
-    setCurrentUserName(data.username);
-    setCurrentUserImage(data.avatarImage);
+  useEffect(() => {
+    const checkUser = async()=>{
+        const data = await JSON.parse(
+            localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+          );
+          setCurrentUserName(data.username);
+          setCurrentUserImage(data.avatarImage);
+    }
+    checkUser();
   }, []);
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
@@ -22,7 +25,7 @@ export default function Contacts({ contacts, changeChat }) {
       {currentUserImage && currentUserImage && (
         <Container>
           <div className="brand">
-            <h3>snappy</h3>
+            <h3>chat</h3>
           </div>
           <div className="contacts">
             {contacts.map((contact, index) => {

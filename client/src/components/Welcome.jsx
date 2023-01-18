@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 export default function Welcome() {
   const [userName, setUserName] = useState("");
-  useEffect(async () => {
-    setUserName(
-      await JSON.parse(
-        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-      ).username
-    );
+  useEffect(() => {
+    const setUser = async()=>{
+        setUserName(
+            await JSON.parse(
+              localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+            ).username
+          );
+    }
+    setUser();
   }, []);
   return (
     <Container>

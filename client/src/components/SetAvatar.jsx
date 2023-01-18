@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Buffer } from "buffer";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -21,29 +20,20 @@ export default function SetAvatar() {
     theme: "dark",
   };
 
-  useEffect( () => {
-    if (!localStorage.getItem("chat-app-user"))
+  useEffect(() => {
+    const checkUser = async()=>{
+      if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY))
       navigate("/login");
-  }, []);
-  const getImages = async () => {
-    const data = [];
-    for (let i = 0; i < 4; i++) {
-      const image = await axios.get(
-        `${api}/${Math.round(Math.random() * 1000)}/`
-      );
-      const buffer = new Buffer(image.data);
-      data.push(buffer.toString("base64"));
     }
-    setAvatars(data);
-    setIsLoading(false);
-  }
+    checkUser();
+  }, []);
 
   const setProfilePicture = async () => {
     if (selectedAvatar === undefined) {
       toast.error("Please select an avatar", toastOptions);
     } else {
       const user = await JSON.parse(
-        localStorage.getItem("chat-app-user")
+        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
       );
 
       const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
@@ -54,7 +44,7 @@ export default function SetAvatar() {
         user.isAvatarImageSet = true;
         user.avatarImage = data.image;
         localStorage.setItem(
-          "chat-app-user",
+          process.env.REACT_APP_LOCALHOST_KEY,
           JSON.stringify(user)
         );
         navigate("/");
@@ -65,14 +55,25 @@ export default function SetAvatar() {
   };
 
   useEffect(() => {
-   
-    getImages();
+    const getAvatars = async()=>{
+      const data = [];
+      for (let i = 0; i < 4; i++) {
+        const image = await axios.get(
+          `${api}/${Math.round(Math.random() * 1000)}`
+        );
+        const buffer = new Buffer(image.data);
+        data.push(buffer.toString("base64"));
+      }
+      setAvatars(data);
+      setIsLoading(false);
+    }
+    getAvatars();
   }, []);
   return (
     <>
       {isLoading ? (
         <Container>
-          <h3>Loading...</h3>
+          <h2>Loading...</h2>
         </Container>
       ) : (
         <Container>
@@ -83,8 +84,9 @@ export default function SetAvatar() {
             {avatars.map((avatar, index) => {
               return (
                 <div key={index}
-                  className={`avatar ${selectedAvatar === index ? "selected" : ""
-                    }`}
+                  className={`avatar ${
+                    selectedAvatar === index ? "selected" : ""
+                  }`}
                 >
                   <img
                     src={`data:image/svg+xml;base64,${avatar}`}
