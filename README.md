@@ -38,8 +38,8 @@ La app permite registro de usuario y login. Selección de una imagen de avatar e
 
 
 
-![clickList](client/assets/chatSelected.PNG)
-
 ![clickList](client/assets/chatUnselected.PNG)
+
+![clickList](client/assets/chatSelected.PNG)
 
 
